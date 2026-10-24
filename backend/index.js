@@ -1,14 +1,16 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { db } from "./src/db/db.js";
-import dotenv from "dotenv"
-import userRoute from "./routers/user.route.json"
-dotenv.config({})
+import dotenv from "dotenv";
 
-const PORT = process.env.PORT || 3000
+import { db } from "./src/db/db.js";
+import userRouter from "./src/routes/user.route.js"
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -20,15 +22,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
+// Default route
 app.get("/", (req, res) => {
-    res.send("server is working properly");
+    res.send("Server is working properly");
 });
 
-// apis
-app.use("api/v1/user",userRoute)
-db().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running at port ${PORT}`);
+// User API routes
+app.use("/api/v1/user", userRouter);
+
+// Connect to database and start server
+db()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running at port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Database connection failed:", error);
     });
-});
