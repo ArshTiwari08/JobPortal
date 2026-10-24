@@ -24,7 +24,7 @@ app.use(cors(corsOptions));
 
 // Default route
 app.get("/", (req, res) => {
-    res.send("Server is working properly");
+    res.send("<h1>Server is working properly </h1>");
 });
 
 // User API routes
