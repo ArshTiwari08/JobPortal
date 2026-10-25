@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import { db } from "./src/db/db.js";
 import userRouter from "./src/routes/user.route.js"
+import companyRoute from "./src/routes/company.route.js"
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 
 // User API routes
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/Company", companyRoute);
 
 // Connect to database and start server
 db()
