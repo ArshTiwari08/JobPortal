@@ -1,28 +1,64 @@
 
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 function Login() {
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        role: "",
+
+    const [formData,setFormData]= useState({
+        fullname :"",
+        password :"",
+        role:""
     });
+    const[loading,setLoading] = useState(false);
+    const [error,setError] = useState("")
+    const { setUser } = useOutletContext();
+    const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    // to handle input change
+    const handleChange  =(e)=>{
+        const{name,value}= e.target
+        setFormData((prev)=>({...prev,[name]:value,}))
+    }
 
-        setFormData({
-        ...formData,
-        [name]: value,
-        });
-    };
-
-    const handleSubmit = (e) => {
+    // to handleSubmit
+    const handleSubmit =async (e)=>{
         e.preventDefault();
+        setLoading(true)
+        setError("")
 
-        console.log("Login Data:", formData);
-    };
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/v1/user/login",
+                formData,
+                {withCredentials:true,}
+            )
+            console.log("Registration successful:",response.data);
+            alert("Registration successful!!!")
+            setFormData({
+                fullname: "",
+                email: "",
+                phoneNumber: "",
+                password: "",
+                role: "",
+            });
+            setUser(true);
+            navigate("/Home");
+            
+        } catch (error) {
+            console.log(
+                "Registration Error:",
+                error.response?.data || error.message
+            );
+            setError(
+                error.response?.data?.message ||
+                "Registration failed. Please try again."
+            );
+        }finally{
+            setLoading(false);
+        }
+    }
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">

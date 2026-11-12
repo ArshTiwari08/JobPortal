@@ -6,48 +6,39 @@ import axios from "axios";
 
 function Signup() {
 
-    const [formData, setFormData] = useState({
-        fullname: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-        role: "",
+    const [formData,setFormData] = useState({
+        fullname:"",
+        email:"",
+        phoneNumber:"",
+        password:"",
+        role:"",
     });
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const[loading,setLoading] = useState(false);
+    const [error,setError] = useState("")
+    const navigate = useNavigate()
+//  to handle input change
+    
+    const handleChange = (e)=>{
+        const{name,value} = e.target;
 
-    // Handle Input Changes
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+        setFormData((prev)=>({...prev,[name]:value,}))
+    }
+    // handle form submission
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    // Handle Form Submission
-    const handleSubmit = async (e) => {
+    const handleSubmit = async(e)=>{
         e.preventDefault();
-
-        setLoading(true);
-        setError("");
+        setLoading(true)
+        setError("")
 
         try {
             const response = await axios.post(
                 "http://localhost:3000/api/v1/user/register",
                 formData,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            console.log("Registration Successful:", response.data);
-
-            alert("Registration Successful!");
-
+                {withCredentials:true,}
+            )
+            console.log("Registration successful:",response.data);
+            alert("Registration successful!!!")
             setFormData({
                 fullname: "",
                 email: "",
@@ -55,7 +46,6 @@ function Signup() {
                 password: "",
                 role: "",
             });
-
             navigate("/Home");
 
         } catch (error) {
@@ -63,16 +53,15 @@ function Signup() {
                 "Registration Error:",
                 error.response?.data || error.message
             );
-
             setError(
                 error.response?.data?.message ||
                 "Registration failed. Please try again."
             );
-
-        } finally {
+        }
+        finally{
             setLoading(false);
         }
-    };
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
